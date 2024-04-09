@@ -3,7 +3,7 @@ from itertools import chain
 from itertools import combinations
 
 #Returns a set of all proper subsets of `x`, sans the empty set.
-#Sets within this set are ordered from largest to smallest.
+#The subsets are ordered from largest to smallest.
 #The relative ordering of `x`'s elements is preserved within each subset.
 #Based on powerset() at https://docs.python.org/2/library/itertools.html#recipes
 def all_proper_subsets(x):
@@ -14,8 +14,7 @@ def all_proper_subsets(x):
 #Requires entries of `enhancers` to be sorted by end position.
 def fully_non_overlapping(enhancers):
 
-    #Loop over `enhancers` backwards and check that each element's starts
-    #"after" its previous element ends.
+    #Loop over `enhancers` and check for overlaps
     i = len(enhancers) - 1
     while i > 0:
         if enhancers[i-1][1] >= enhancers[i][0]:
@@ -47,7 +46,6 @@ def find_the_best_nonoverlaping_enhancers(enhancers):
     #Prepare to find optimal solution
 
     #Set of all non-empty proper subsets of `enhancers`.
-    #Guaranteed to contain the optimal solution.
     subsets = all_proper_subsets(enhancers)
 
     #This list will contain subsets which were found to be fully non-overlapping
@@ -61,7 +59,7 @@ def find_the_best_nonoverlaping_enhancers(enhancers):
 
     #Check if each subset of `enhancers` is fully non-overlapping
     #and add it to `fno_subsets` if so,
-    #unless `fno_subsets` contains a previous subset which is a superset
+    #unless `fno_subsets` contains another subset which is a superset
     #of the current subset.
     for subset in subsets:
 
@@ -106,10 +104,10 @@ def find_the_best_nonoverlaping_enhancers(enhancers):
         #
         #Not calculating its binding site count is also fine,
         #since the superset is guaranteed to have a higher binding site count
-        #(this would not hold if the binding site count could be negative).
+        #(this wouldn't hold if binding site counts could be negative).
 
 
     #Finally, return optimal solution in requested format.
-    #Iterating over all_proper_subsets()'s return value
-    #produces a tuple, rather than a list, hence a cast to list is required.
+    #Iterating over the generator returned by all_proper_subsets()
+    #produces tuples, rather than lists, hence a cast to list is required.
     return (list(best_subset), best_subset_bs)
